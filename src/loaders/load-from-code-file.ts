@@ -27,7 +27,9 @@ function isSchemaAst(obj: any): obj is DocumentNode {
   return (obj as DocumentNode).kind !== undefined;
 }
 
-function resolveExport(fileExport: GraphQLSchema | DocumentNode | string | { data: IntrospectionQuery } | IntrospectionQuery): DocumentNode | null {
+function resolveExport(
+  fileExport: GraphQLSchema | DocumentNode | string | { data: IntrospectionQuery } | IntrospectionQuery
+): DocumentNode | null {
   if (isSchemaObject(fileExport)) {
     return parse(printSchemaWithDirectives(fileExport));
   } else if (isSchemaText(fileExport)) {
@@ -97,7 +99,10 @@ async function tryToLoadFromCodeAst(filePath: string, options?: ExtractOptions):
   }
 }
 
-export async function loadFromCodeFile(filePath: string, options: ExtractOptions & { noRequire?: boolean }): Promise<DocumentNode> {
+export async function loadFromCodeFile(
+  filePath: string,
+  options: ExtractOptions & { noRequire?: boolean }
+): Promise<DocumentNode> {
   let loaded: DocumentNode | null = null;
 
   try {

@@ -10,14 +10,14 @@ var schema = new Promise(resolve => {
             type: graphql.GraphQLString,
             resolve() {
               return 'world';
-            }
-          }
-        }
-      })
+            },
+          },
+        },
+      }),
     })
   );
 });
 
 module.exports = {
-  schema
+  schema,
 };

@@ -63,7 +63,7 @@ describe('documentsFromGlob', () => {
     } catch (e) {
       expect(e).toBeDefined();
     }
-  })
+  });
 
   it('Should ignore schema definitions', async () => {
     const glob = join(__dirname, './test-files/', '*.graphql');

@@ -8,10 +8,10 @@ var schema = new graphql.GraphQLSchema({
         type: graphql.GraphQLString,
         resolve() {
           return 'world';
-        }
-      }
-    }
-  })
+        },
+      },
+    },
+  }),
 });
 
 exports['default'] = schema;

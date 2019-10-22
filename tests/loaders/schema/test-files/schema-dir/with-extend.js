@@ -13,7 +13,7 @@ const schema = makeExecutableSchema({
     extend type Query {
       hello: String
     }
-  `
+  `,
 });
 
 module.exports = schema;

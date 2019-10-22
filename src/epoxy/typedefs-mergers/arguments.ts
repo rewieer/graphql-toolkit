@@ -1,6 +1,9 @@
 import { InputValueDefinitionNode } from 'graphql';
 
-export function mergeArguments(args1: InputValueDefinitionNode[], args2: InputValueDefinitionNode[]): InputValueDefinitionNode[] {
+export function mergeArguments(
+  args1: InputValueDefinitionNode[],
+  args2: InputValueDefinitionNode[]
+): InputValueDefinitionNode[] {
   return deduplicateArguments([].concat(args2, args1).filter(a => a));
 }
 

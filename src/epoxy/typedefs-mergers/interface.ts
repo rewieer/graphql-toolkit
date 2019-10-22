@@ -6,14 +6,17 @@ import { mergeDirectives } from './directives';
 export function mergeInterface(
   node: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode,
   existingNode: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode,
-  config: Config): InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode {
-
+  config: Config
+): InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode {
   if (existingNode) {
     try {
       return {
         name: node.name,
         description: node['description'] || existingNode['description'],
-        kind: (node.kind === 'InterfaceTypeDefinition' || existingNode.kind === 'InterfaceTypeDefinition') ? 'InterfaceTypeDefinition' : 'InterfaceTypeExtension',
+        kind:
+          node.kind === 'InterfaceTypeDefinition' || existingNode.kind === 'InterfaceTypeDefinition'
+            ? 'InterfaceTypeDefinition'
+            : 'InterfaceTypeExtension',
         loc: node.loc,
         fields: mergeFields(node, node.fields, existingNode.fields, config),
         directives: mergeDirectives(node.directives, existingNode.directives, config),

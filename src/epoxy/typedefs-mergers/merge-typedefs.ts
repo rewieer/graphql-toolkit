@@ -72,7 +72,10 @@ export interface Config {
   exclusions?: string[];
 }
 
-export function mergeGraphQLSchemas(types: Array<string | Source | DocumentNode | GraphQLSchema>, config?: Omit<Partial<Config>, 'commentDescriptions'>) {
+export function mergeGraphQLSchemas(
+  types: Array<string | Source | DocumentNode | GraphQLSchema>,
+  config?: Omit<Partial<Config>, 'commentDescriptions'>
+) {
   console.info(`
     GraphQL Toolkit/Epoxy 
     Deprecation Notice;
@@ -83,9 +86,18 @@ export function mergeGraphQLSchemas(types: Array<string | Source | DocumentNode 
 }
 
 export function mergeTypeDefs(types: Array<string | Source | DocumentNode | GraphQLSchema>): DocumentNode;
-export function mergeTypeDefs(types: Array<string | Source | DocumentNode | GraphQLSchema>, config?: Partial<Config> & { commentDescriptions: true }): string;
-export function mergeTypeDefs(types: Array<string | Source | DocumentNode | GraphQLSchema>, config?: Omit<Partial<Config>, 'commentDescriptions'>): DocumentNode;
-export function mergeTypeDefs(types: Array<string | Source | DocumentNode | GraphQLSchema>, config?: Partial<Config>): DocumentNode | string {
+export function mergeTypeDefs(
+  types: Array<string | Source | DocumentNode | GraphQLSchema>,
+  config?: Partial<Config> & { commentDescriptions: true }
+): string;
+export function mergeTypeDefs(
+  types: Array<string | Source | DocumentNode | GraphQLSchema>,
+  config?: Omit<Partial<Config>, 'commentDescriptions'>
+): DocumentNode;
+export function mergeTypeDefs(
+  types: Array<string | Source | DocumentNode | GraphQLSchema>,
+  config?: Partial<Config>
+): DocumentNode | string {
   resetComments();
 
   const doc = {
@@ -117,7 +129,11 @@ function fixSchemaAst(schema: GraphQLSchema, config: Config): GraphQLSchema {
 }
 
 function createSchemaDefinition(
-  def: { query: string | GraphQLObjectType | null; mutation: string | GraphQLObjectType | null; subscription: string | GraphQLObjectType | null },
+  def: {
+    query: string | GraphQLObjectType | null;
+    mutation: string | GraphQLObjectType | null;
+    subscription: string | GraphQLObjectType | null;
+  },
   config?: {
     force?: boolean;
   }
@@ -151,7 +167,10 @@ function createSchemaDefinition(
   return undefined;
 }
 
-export function mergeGraphQLTypes(types: Array<string | Source | DocumentNode | GraphQLSchema>, config: Config): DefinitionNode[] {
+export function mergeGraphQLTypes(
+  types: Array<string | Source | DocumentNode | GraphQLSchema>,
+  config: Config
+): DefinitionNode[] {
   resetComments();
 
   const allNodes: ReadonlyArray<DefinitionNode> = types
@@ -255,19 +274,32 @@ function extendDefinition(type: GraphQLNamedType): GraphQLNamedType['astNode'] {
     case Kind.OBJECT_TYPE_DEFINITION:
       return {
         ...type.astNode,
-        fields: type.astNode.fields.concat((type.extensionASTNodes as ReadonlyArray<ObjectTypeExtensionNode>).reduce((fields, node) => fields.concat(node.fields), [])),
+        fields: type.astNode.fields.concat(
+          (type.extensionASTNodes as ReadonlyArray<ObjectTypeExtensionNode>).reduce(
+            (fields, node) => fields.concat(node.fields),
+            []
+          )
+        ),
       };
     case Kind.INPUT_OBJECT_TYPE_DEFINITION:
       return {
         ...type.astNode,
-        fields: type.astNode.fields.concat((type.extensionASTNodes as ReadonlyArray<ObjectTypeExtensionNode>).reduce((fields, node) => fields.concat(node.fields), [])),
+        fields: type.astNode.fields.concat(
+          (type.extensionASTNodes as ReadonlyArray<ObjectTypeExtensionNode>).reduce(
+            (fields, node) => fields.concat(node.fields),
+            []
+          )
+        ),
       };
     default:
       return type.astNode;
   }
 }
 
-function correctType<TMap extends { [key: string]: GraphQLNamedType }, TName extends keyof TMap>(typeName: TName, typesMap: TMap): TMap[TName] {
+function correctType<TMap extends { [key: string]: GraphQLNamedType }, TName extends keyof TMap>(
+  typeName: TName,
+  typesMap: TMap
+): TMap[TName] {
   const type = typesMap[typeName];
 
   type.name = typeName.toString();

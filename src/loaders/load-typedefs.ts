@@ -15,7 +15,14 @@ const GQL_EXTENSIONS = ['.gql', '.graphql', '.graphqls'];
 const CODE_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
 function filterFiles(files: string[]): string[] {
-  return files.filter(file => !file.endsWith('.d.ts') && !file.endsWith('.spec.ts') && !file.endsWith('.spec.js') && !file.endsWith('.test.ts') && !file.endsWith('.test.js'));
+  return files.filter(
+    file =>
+      !file.endsWith('.d.ts') &&
+      !file.endsWith('.spec.ts') &&
+      !file.endsWith('.spec.js') &&
+      !file.endsWith('.test.ts') &&
+      !file.endsWith('.test.js')
+  );
 }
 
 export interface DocumentFile {
@@ -57,9 +64,14 @@ export const filterKind = (content: DocumentNode, filterKinds: null | string[]) 
     }
   }
   return content;
-}
+};
 
-export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string | string[], options: LoadTypedefsOptions & Partial<AdditionalConfig> = {}, filterKinds: null | string[] = [], cwd = process.cwd()): Promise<DocumentFile[]> {
+export async function loadTypedefs<AdditionalConfig = any>(
+  pointToSchema: string | string[],
+  options: LoadTypedefsOptions & Partial<AdditionalConfig> = {},
+  filterKinds: null | string[] = [],
+  cwd = process.cwd()
+): Promise<DocumentFile[]> {
   const typesPaths: string[] = asArray(pointToSchema);
   const found$: Promise<any>[] = [];
   let found: DocumentFile[] = [];
@@ -74,11 +86,11 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
           if (content && content.definitions && content.definitions.length > 0) {
             found.push({
               filePath: typesPath,
-              content
+              content,
             });
           }
-        }),
-      )
+        })
+      );
     } else if (!isUri(typesPath)) {
       const fixedPath = fixWindowsPath(typesPath);
 
@@ -86,26 +98,26 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
         const relevantFiles = filterFiles(asArray(fixedPath));
         for (const filePath of relevantFiles) {
           found$.push(
-            Promise.resolve().then(
-              async () => {
-                let content = await loadSingleFile(
-                  filePath, {
+            Promise.resolve().then(async () => {
+              let content = await loadSingleFile(
+                filePath,
+                {
                   skipGraphQLImport: options.skipGraphQLImport,
                   noRequire: options.noRequire,
-                  tagPluck: options.tagPluck || {}
-                }, cwd);
-                content = filterKind(content, filterKinds);
-                if (content && content.definitions && content.definitions.length > 0) {
-                  found.push({
-                    filePath,
-                    content
-                  });
-                }
+                  tagPluck: options.tagPluck || {},
+                },
+                cwd
+              );
+              content = filterKind(content, filterKinds);
+              if (content && content.definitions && content.definitions.length > 0) {
+                found.push({
+                  filePath,
+                  content,
+                });
               }
-            )
-          )
+            })
+          );
         }
-
       } else if (isGlob(fixedPath)) {
         foundGlobs.push(fixedPath);
       }
@@ -127,7 +139,9 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
 
   if (foundGlobs.length > 0) {
     if (options.ignore) {
-      const ignoreList = asArray(options.ignore).map(g => `!(${g})`).map(p => fixWindowsPath(p));
+      const ignoreList = asArray(options.ignore)
+        .map(g => `!(${g})`)
+        .map(p => fixWindowsPath(p));
 
       if (ignoreList.length > 0) {
         foundGlobs.push(...ignoreList);
@@ -136,14 +150,20 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
 
     const globby = eval(`require('globby')`) as typeof import('globby');
     found$.push(
-      Promise.resolve().then(async () =>{
+      Promise.resolve().then(async () => {
         const paths = await globby(foundGlobs, { cwd, absolute: true });
         await Promise.all(
           paths.map(async path => {
             const filePath = fixWindowsPath(path);
             let content = await loadSingleFile(
               filePath,
-              { skipGraphQLImport: options.skipGraphQLImport, noRequire: options.noRequire, tagPluck: options.tagPluck || {} }, cwd);
+              {
+                skipGraphQLImport: options.skipGraphQLImport,
+                noRequire: options.noRequire,
+                tagPluck: options.tagPluck || {},
+              },
+              cwd
+            );
             content = filterKind(content, filterKinds);
             if (content && content.definitions && content.definitions.length > 0) {
               found.push({
@@ -152,7 +172,7 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
               });
             }
           })
-        )
+        );
       })
     );
   }
@@ -168,7 +188,11 @@ export async function loadTypedefs<AdditionalConfig = any>(pointToSchema: string
   return found;
 }
 
-export async function loadSingleFile(filePath: string, options: ExtractOptions & { noRequire?: boolean; skipGraphQLImport?: boolean } = {}, cwd = process.cwd()): Promise<DocumentNode> {
+export async function loadSingleFile(
+  filePath: string,
+  options: ExtractOptions & { noRequire?: boolean; skipGraphQLImport?: boolean } = {},
+  cwd = process.cwd()
+): Promise<DocumentNode> {
   const extension = extname(filePath).toLowerCase();
   const fullPath = fixWindowsPath(isAbsolute(filePath) ? filePath : resolvePath(cwd, filePath));
 

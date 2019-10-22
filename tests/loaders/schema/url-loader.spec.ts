@@ -55,7 +55,7 @@ describe('Schema URL Loader', () => {
       expect(calls.length).toBe(1);
       expect(calls[0].headers).toEqual({
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       });
     });
 
@@ -70,7 +70,7 @@ describe('Schema URL Loader', () => {
       expect(calls[0].headers).toEqual({
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Auth: '1'
+        Auth: '1',
       });
     });
 
@@ -87,7 +87,7 @@ describe('Schema URL Loader', () => {
         'Content-Type': 'application/json',
         A: '1',
         B: '2',
-        C: '3'
+        C: '3',
       });
     });
   });

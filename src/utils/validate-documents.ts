@@ -1,5 +1,14 @@
 import * as AggregateError from 'aggregate-error';
-import { Kind, validate, GraphQLSchema, GraphQLError, specifiedRules, FragmentDefinitionNode, ValidationContext, ASTVisitor } from 'graphql';
+import {
+  Kind,
+  validate,
+  GraphQLSchema,
+  GraphQLError,
+  specifiedRules,
+  FragmentDefinitionNode,
+  ValidationContext,
+  ASTVisitor,
+} from 'graphql';
 import { DocumentFile } from '../loaders/load-typedefs';
 
 export type ValidationRule = (context: ValidationContext) => ASTVisitor;
@@ -11,49 +20,56 @@ export interface LoadDocumentError {
   readonly errors: ReadonlyArray<GraphQLError>;
 }
 
-export const validateGraphQlDocuments = async (schema: GraphQLSchema, documentFiles: DocumentFile[], effectiveRules: ValidationRule[] = DEFAULT_EFFECTIVE_RULES): Promise<ReadonlyArray<LoadDocumentError>> => {
-
+export const validateGraphQlDocuments = async (
+  schema: GraphQLSchema,
+  documentFiles: DocumentFile[],
+  effectiveRules: ValidationRule[] = DEFAULT_EFFECTIVE_RULES
+): Promise<ReadonlyArray<LoadDocumentError>> => {
   const allFragments: FragmentDefinitionNode[] = [];
 
-  const allFragments$ = Promise.all(documentFiles.map(async documentFile => {
-    if (documentFile.content) {
-      for (const definitionNode of documentFile.content.definitions) {
-        if (definitionNode.kind === Kind.FRAGMENT_DEFINITION) {
-          allFragments.push(definitionNode);
+  const allFragments$ = Promise.all(
+    documentFiles.map(async documentFile => {
+      if (documentFile.content) {
+        for (const definitionNode of documentFile.content.definitions) {
+          if (definitionNode.kind === Kind.FRAGMENT_DEFINITION) {
+            allFragments.push(definitionNode);
+          }
         }
       }
-    }
-  }));
+    })
+  );
 
   await allFragments$;
 
   const allErrors: LoadDocumentError[] = [];
-  
-  const allErrors$ = Promise.all(documentFiles.map(async documentFile => {
-    const documentToValidate = {
-      kind: Kind.DOCUMENT,
-      definitions: [...allFragments, ...documentFile.content.definitions].filter((d, index, arr) => {
-        if (d.kind === Kind.FRAGMENT_DEFINITION) {
-          const foundIndex = arr.findIndex(i => i.kind === Kind.FRAGMENT_DEFINITION && i.name.value === d.name.value);
 
-          if (foundIndex !== index) {
-            return false;
+  const allErrors$ = Promise.all(
+    documentFiles.map(async documentFile => {
+      const documentToValidate = {
+        kind: Kind.DOCUMENT,
+        definitions: [...allFragments, ...documentFile.content.definitions].filter((d, index, arr) => {
+          if (d.kind === Kind.FRAGMENT_DEFINITION) {
+            const foundIndex = arr.findIndex(i => i.kind === Kind.FRAGMENT_DEFINITION && i.name.value === d.name.value);
+
+            if (foundIndex !== index) {
+              return false;
+            }
           }
-        }
 
-        return true;
-      }),
-    };
+          return true;
+        }),
+      };
 
-    const errors = validate(schema, documentToValidate, effectiveRules);
+      const errors = validate(schema, documentToValidate, effectiveRules);
 
-    if(errors.length > 0) {
-      allErrors.push({
-        filePath: documentFile.filePath,
-        errors
-      })
-    }
-  }));
+      if (errors.length > 0) {
+        allErrors.push({
+          filePath: documentFile.filePath,
+          errors,
+        });
+      }
+    })
+  );
 
   await allErrors$;
 
@@ -70,7 +86,9 @@ export function checkValidationErrors(loadDocumentErrors: ReadonlyArray<LoadDocu
         error.name = 'GraphQLDocumentError';
         error.message = `${error.name}: ${graphQLError.message}`;
         error.stack = error.message;
-        graphQLError.locations.forEach(location => (error.stack += `\n    at ${loadDocumentError.filePath}:${location.line}:${location.column}`));
+        graphQLError.locations.forEach(
+          location => (error.stack += `\n    at ${loadDocumentError.filePath}:${location.line}:${location.column}`)
+        );
 
         errors.push(error);
       }

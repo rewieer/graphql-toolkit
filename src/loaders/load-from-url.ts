@@ -1,4 +1,11 @@
-import { introspectionQuery, buildClientSchema, DocumentNode, parse, IntrospectionQuery, ExecutionResult } from 'graphql';
+import {
+  introspectionQuery,
+  buildClientSchema,
+  DocumentNode,
+  parse,
+  IntrospectionQuery,
+  ExecutionResult,
+} from 'graphql';
 import { printSchemaWithDirectives } from '../utils/print-schema-with-directives';
 
 export type FetchFn = WindowOrWorkerGlobalScope['fetch'];

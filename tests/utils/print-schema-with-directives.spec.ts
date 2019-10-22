@@ -54,12 +54,12 @@ describe('printSchemaWithDirectives', () => {
         Other: {
           something: () => 'a',
         },
-        JSON: GraphQLJSON
-      }
+        JSON: GraphQLJSON,
+      },
     });
 
     const output = printSchemaWithDirectives(schema);
-    
+
     expect(output).toContain('scalar JSON');
     expect(output).toContain('type Other');
     expect(output).toContain('type TestType');

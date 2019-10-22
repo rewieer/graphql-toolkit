@@ -40,21 +40,27 @@ function mergeArguments(a1: ArgumentNode[], a2: ArgumentNode[]): ArgumentNode[] 
 }
 
 function deduplicateDirectives(directives: ReadonlyArray<DirectiveNode>): DirectiveNode[] {
-  return directives.map((directive, i, all) => {
-    const firstAt = all.findIndex(d => d.name.value === directive.name.value);
+  return directives
+    .map((directive, i, all) => {
+      const firstAt = all.findIndex(d => d.name.value === directive.name.value);
 
-    if (firstAt !== i) {
-      const dup = all[firstAt];
+      if (firstAt !== i) {
+        const dup = all[firstAt];
 
-      (directive as any).arguments = mergeArguments(directive.arguments as any, dup.arguments as any)
-      return null;
-    }
+        (directive as any).arguments = mergeArguments(directive.arguments as any, dup.arguments as any);
+        return null;
+      }
 
-    return directive;
-  }).filter(d => d);
+      return directive;
+    })
+    .filter(d => d);
 }
 
-export function mergeDirectives(d1: ReadonlyArray<DirectiveNode>, d2: ReadonlyArray<DirectiveNode>, config?: Config): DirectiveNode[] {
+export function mergeDirectives(
+  d1: ReadonlyArray<DirectiveNode>,
+  d2: ReadonlyArray<DirectiveNode>,
+  config?: Config
+): DirectiveNode[] {
   const reverseOrder: boolean = config && config.reverseDirectives;
   const asNext = reverseOrder ? d1 : d2;
   const asFirst = reverseOrder ? d2 : d1;
@@ -64,7 +70,10 @@ export function mergeDirectives(d1: ReadonlyArray<DirectiveNode>, d2: ReadonlyAr
     if (directiveAlreadyExists(result, directive)) {
       const existingDirectiveIndex = result.findIndex(d => d.name.value === directive.name.value);
       const existingDirective = result[existingDirectiveIndex];
-      (result[existingDirectiveIndex] as any).arguments = mergeArguments(directive.arguments as any, existingDirective.arguments as any);
+      (result[existingDirectiveIndex] as any).arguments = mergeArguments(
+        directive.arguments as any,
+        existingDirective.arguments as any
+      );
     } else {
       result.push(directive);
     }
@@ -80,23 +89,35 @@ function validateInputs(node: DirectiveDefinitionNode, existingNode: DirectiveDe
   const sameArguments = printedNode.replace(leaveInputs, '') === printedExistingNode.replace(leaveInputs, '');
 
   if (!sameArguments) {
-    throw new Error(`Unable to merge GraphQL directive "${node.name.value}". \nExisting directive:  \n\t${printedExistingNode} \nReceived directive: \n\t${printedNode}`);
+    throw new Error(
+      `Unable to merge GraphQL directive "${node.name.value}". \nExisting directive:  \n\t${printedExistingNode} \nReceived directive: \n\t${printedNode}`
+    );
   }
 }
 
-export function mergeDirective(node: DirectiveDefinitionNode, existingNode?: DirectiveDefinitionNode): DirectiveDefinitionNode {
+export function mergeDirective(
+  node: DirectiveDefinitionNode,
+  existingNode?: DirectiveDefinitionNode
+): DirectiveDefinitionNode {
   if (existingNode) {
     validateInputs(node, existingNode);
 
     return {
       ...node,
-      locations: [...existingNode.locations, ...node.locations.filter(name => !nameAlreadyExists(name, existingNode.locations))],
+      locations: [
+        ...existingNode.locations,
+        ...node.locations.filter(name => !nameAlreadyExists(name, existingNode.locations)),
+      ],
     };
   }
 
   return node;
 }
 
-function deduplicateLists<T>(source: readonly T[], target: readonly T[], filterFn: (val: T, source: readonly T[]) => boolean): T[] {
+function deduplicateLists<T>(
+  source: readonly T[],
+  target: readonly T[],
+  filterFn: (val: T, source: readonly T[]) => boolean
+): T[] {
   return source.concat(target.filter(val => filterFn(val, source)));
 }

@@ -1,6 +1,18 @@
 import { loadResolversFiles, loadSchemaFiles } from '../../src';
 
-function testSchemaDir({ path, expected, note, extensions, ignoreIndex }: { path: string; expected: any; note: string; extensions?: string[] | null; ignoreIndex?: boolean }) {
+function testSchemaDir({
+  path,
+  expected,
+  note,
+  extensions,
+  ignoreIndex,
+}: {
+  path: string;
+  expected: any;
+  note: string;
+  extensions?: string[] | null;
+  ignoreIndex?: boolean;
+}) {
   it(`should return the correct schema results for path: ${path} (${note})`, () => {
     const options = { ignoreIndex };
     const result = loadSchemaFiles(path, extensions ? { ...options, extensions } : options);
@@ -10,7 +22,21 @@ function testSchemaDir({ path, expected, note, extensions, ignoreIndex }: { path
   });
 }
 
-function testResolversDir({ path, expected, note, extensions, compareValue, ignoreIndex }: { path: string; expected: any; note: string; extensions?: string[]; compareValue?: boolean; ignoreIndex?: boolean }) {
+function testResolversDir({
+  path,
+  expected,
+  note,
+  extensions,
+  compareValue,
+  ignoreIndex,
+}: {
+  path: string;
+  expected: any;
+  note: string;
+  extensions?: string[];
+  compareValue?: boolean;
+  ignoreIndex?: boolean;
+}) {
   if (typeof compareValue === 'undefined') {
     compareValue = true;
   }

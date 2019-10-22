@@ -21,7 +21,14 @@ export function extractExtensions(input: DocumentNode | Source | string): Docume
     throw new Error('Only DocumentNode, Source and string are accepted');
   }
 
-  const exclude = [Kind.SCALAR_TYPE_DEFINITION, Kind.OBJECT_TYPE_DEFINITION, Kind.INTERFACE_TYPE_DEFINITION, Kind.UNION_TYPE_DEFINITION, Kind.ENUM_TYPE_DEFINITION, Kind.DIRECTIVE_DEFINITION];
+  const exclude = [
+    Kind.SCALAR_TYPE_DEFINITION,
+    Kind.OBJECT_TYPE_DEFINITION,
+    Kind.INTERFACE_TYPE_DEFINITION,
+    Kind.UNION_TYPE_DEFINITION,
+    Kind.ENUM_TYPE_DEFINITION,
+    Kind.DIRECTIVE_DEFINITION,
+  ];
 
   return visit(
     doc,

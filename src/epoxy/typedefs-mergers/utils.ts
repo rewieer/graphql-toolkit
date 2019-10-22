@@ -88,13 +88,11 @@ export function isGraphQLSchema(obj: any): obj is GraphQLSchema {
 }
 
 export function extractType(type: TypeNode): NamedTypeNode {
-
   let visitedType = type;
   while (visitedType.kind === 'ListType' || visitedType.kind === 'NonNullType') {
     visitedType = visitedType.type;
   }
   return visitedType as any;
-
 }
 
 export function isSchemaDefinition(node: DefinitionNode): node is SchemaDefinitionNode {

@@ -15,7 +15,7 @@ module.exports = {
   __getCalls: url => {
     return calls[url] || [];
   },
-  async fetch(url, options){
+  async fetch(url, options) {
     if (!calls[url]) {
       calls[url] = [];
     }
@@ -26,12 +26,12 @@ module.exports = {
       return {
         async json() {
           return {
-            data: mocks[url]
+            data: mocks[url],
           };
-        }
-      }
+        },
+      };
     } else {
       throw new Error('Invalid request');
     }
-  }
+  },
 };

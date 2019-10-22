@@ -165,9 +165,16 @@ describe('Merge TypeDefs', () => {
 
   describe('mergeGraphQLTypes', () => {
     it('should return the correct definition of Schema', () => {
-      const mergedArray = mergeGraphQLTypes(['type Query { f1: String }', 'type Query { f2: String }', 'type MyType { field: Int } type Query { f3: MyType }'], {
-        useSchemaDefinition: true,
-      });
+      const mergedArray = mergeGraphQLTypes(
+        [
+          'type Query { f1: String }',
+          'type Query { f2: String }',
+          'type MyType { field: Int } type Query { f3: MyType }',
+        ],
+        {
+          useSchemaDefinition: true,
+        }
+      );
 
       expect(mergedArray.length).toBe(3);
       expect(mergedArray[0].kind).toBe('ObjectTypeDefinition');
@@ -176,9 +183,17 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should return the correct definition of Schema', () => {
-      const mergedArray = mergeGraphQLTypes(['type Query { f1: String }', 'type Query { f2: String }', 'schema { query: Query }', 'type MyType { field: Int } type Query { f3: MyType }'], {
-        useSchemaDefinition: true,
-      });
+      const mergedArray = mergeGraphQLTypes(
+        [
+          'type Query { f1: String }',
+          'type Query { f2: String }',
+          'schema { query: Query }',
+          'type MyType { field: Int } type Query { f3: MyType }',
+        ],
+        {
+          useSchemaDefinition: true,
+        }
+      );
 
       expect(mergedArray.length).toBe(3);
       expect(mergedArray[0].kind).toBe('ObjectTypeDefinition');
@@ -187,7 +202,12 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should accept root schema object', () => {
-      const mergedSchema = mergeTypeDefs(['type RootQuery { f1: String }', 'type RootQuery { f2: String }', 'schema { query: RootQuery }', 'type MyType { field: Int } type RootQuery { f3: MyType }']);
+      const mergedSchema = mergeTypeDefs([
+        'type RootQuery { f1: String }',
+        'type RootQuery { f2: String }',
+        'schema { query: RootQuery }',
+        'type MyType { field: Int } type RootQuery { f3: MyType }',
+      ]);
 
       const schema = makeExecutableSchema({
         typeDefs: mergedSchema,
@@ -200,9 +220,19 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should return the correct definition of Schema when it defined multiple times', () => {
-      const mergedArray = mergeGraphQLTypes(['type Query { f1: String }', 'type Query { f2: String }', 'schema { query: Query }', 'schema { query: Query }', 'schema { query: Query }', 'type MyType { field: Int } type Query { f3: MyType }'], {
-        useSchemaDefinition: true,
-      });
+      const mergedArray = mergeGraphQLTypes(
+        [
+          'type Query { f1: String }',
+          'type Query { f2: String }',
+          'schema { query: Query }',
+          'schema { query: Query }',
+          'schema { query: Query }',
+          'type MyType { field: Int } type Query { f3: MyType }',
+        ],
+        {
+          useSchemaDefinition: true,
+        }
+      );
 
       expect(mergedArray.length).toBe(3);
       expect(mergedArray[0].kind).toBe('ObjectTypeDefinition');
@@ -213,7 +243,11 @@ describe('Merge TypeDefs', () => {
 
   describe('mergeTypeDefs', () => {
     it('should return a Document with the correct values', () => {
-      const merged = mergeTypeDefs(['type Query { f1: String }', 'type Query { f2: String }', 'type MyType { field: Int } type Query { f3: MyType }']);
+      const merged = mergeTypeDefs([
+        'type Query { f1: String }',
+        'type Query { f2: String }',
+        'type MyType { field: Int } type Query { f3: MyType }',
+      ]);
 
       expect(stripWhitespaces(print(merged))).toBe(
         stripWhitespaces(`
@@ -234,9 +268,16 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should skip printing schema definition object on session', () => {
-      const merged = mergeTypeDefs(['type Query { f1: String }', 'type Query { f2: String }', 'type MyType { field: Int } type Query { f3: MyType }'], {
-        useSchemaDefinition: false,
-      });
+      const merged = mergeTypeDefs(
+        [
+          'type Query { f1: String }',
+          'type Query { f2: String }',
+          'type MyType { field: Int } type Query { f3: MyType }',
+        ],
+        {
+          useSchemaDefinition: false,
+        }
+      );
 
       const output = stripWhitespaces(print(merged));
 
@@ -350,7 +391,11 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should include directives', () => {
-      const merged = mergeTypeDefs([`directive @id on FIELD_DEFINITION`, `type MyType { id: Int @id }`, `type Query { f1: MyType }`]);
+      const merged = mergeTypeDefs([
+        `directive @id on FIELD_DEFINITION`,
+        `type MyType { id: Int @id }`,
+        `type Query { f1: MyType }`,
+      ]);
 
       expect(stripWhitespaces(print(merged))).toBe(
         stripWhitespaces(`
@@ -403,7 +448,12 @@ describe('Merge TypeDefs', () => {
 
     it('should fail if inputs of the same directive are different from each other', (done: jest.DoneCallback) => {
       try {
-        mergeTypeDefs([`directive @id on FIELD_DEFINITION`, `directive @id(name: String) on FIELD_DEFINITION`, `type MyType { id: Int @id }`, `type Query { f1: MyType }`]);
+        mergeTypeDefs([
+          `directive @id on FIELD_DEFINITION`,
+          `directive @id(name: String) on FIELD_DEFINITION`,
+          `type MyType { id: Int @id }`,
+          `type Query { f1: MyType }`,
+        ]);
 
         done.fail('It should have failed');
       } catch (e) {
@@ -418,7 +468,12 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should merge the same directives', () => {
-      const merged = mergeTypeDefs([`directive @id on FIELD_DEFINITION`, `directive @id on FIELD_DEFINITION`, `type MyType { id: Int @id }`, `type Query { f1: MyType }`]);
+      const merged = mergeTypeDefs([
+        `directive @id on FIELD_DEFINITION`,
+        `directive @id on FIELD_DEFINITION`,
+        `type MyType { id: Int @id }`,
+        `type Query { f1: MyType }`,
+      ]);
 
       expect(stripWhitespaces(print(merged))).toBe(
         stripWhitespaces(`
@@ -506,7 +561,12 @@ describe('Merge TypeDefs', () => {
     });
 
     it('should merge the same directives and its locations', () => {
-      const merged = mergeTypeDefs([`directive @id on FIELD_DEFINITION`, `directive @id on OBJECT`, `type MyType { id: Int @id }`, `type Query { f1: MyType }`]);
+      const merged = mergeTypeDefs([
+        `directive @id on FIELD_DEFINITION`,
+        `directive @id on OBJECT`,
+        `type MyType { id: Int @id }`,
+        `type Query { f1: MyType }`,
+      ]);
 
       expect(stripWhitespaces(print(merged))).toBe(
         stripWhitespaces(`

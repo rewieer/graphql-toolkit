@@ -8,12 +8,12 @@ var schema = new graphql.GraphQLSchema({
         type: graphql.GraphQLString,
         resolve() {
           return 'world';
-        }
-      }
-    }
-  })
+        },
+      },
+    },
+  }),
 });
 
 module.exports = {
-  schema
+  schema,
 };

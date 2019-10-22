@@ -40,7 +40,10 @@ function calculateOptions(options?: ExtractOptions) {
   }, {});
 }
 
-export async function extractDocumentStringFromCodeFile(source: Source, options?: ExtractOptions): Promise<string | void> {
+export async function extractDocumentStringFromCodeFile(
+  source: Source,
+  options?: ExtractOptions
+): Promise<string | void> {
   try {
     const parsed = parse(source.body);
 

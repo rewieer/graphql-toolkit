@@ -6,7 +6,7 @@ export type ResolversFactory<TContext> = (...args: any[]) => IResolvers<any, TCo
 export type ResolversDefinition<TContext> = IResolvers<any, TContext> | ResolversFactory<TContext>;
 
 const isMergeableObject = (target: any): target is object => {
-  if(!target) {
+  if (!target) {
     return false;
   }
   if (typeof target !== 'object') {
@@ -23,13 +23,16 @@ const isMergeableObject = (target: any): target is object => {
     return false;
   }
   return true;
-} 
+};
 
 export interface MergeResolversOptions {
-  exclusions ?: string[];
+  exclusions?: string[];
 }
 
-export function mergeResolvers<TContext, T extends ResolversDefinition<TContext>>(resolversDefinitions: T[], options?: MergeResolversOptions): T {
+export function mergeResolvers<TContext, T extends ResolversDefinition<TContext>>(
+  resolversDefinitions: T[],
+  options?: MergeResolversOptions
+): T {
   if (!resolversDefinitions || resolversDefinitions.length === 0) {
     return {} as T;
   }
@@ -55,14 +58,14 @@ export function mergeResolvers<TContext, T extends ResolversDefinition<TContext>
       return deepMerge.all([...resolvers, ...resultsOfFactories], { isMergeableObject }) as any;
     }) as any;
   } else {
-    result = deepMerge.all(resolvers, { isMergeableObject }) as IResolvers<any, TContext> as T;
+    result = (deepMerge.all(resolvers, { isMergeableObject }) as IResolvers<any, TContext>) as T;
   }
   if (options && options.exclusions) {
     for (const exclusion of options.exclusions) {
       const [typeName, fieldName] = exclusion.split('.');
       if (!fieldName || fieldName === '*') {
         delete result[typeName];
-      } else if(result[typeName]) {
+      } else if (result[typeName]) {
         delete result[typeName][fieldName];
       }
     }
@@ -70,7 +73,10 @@ export function mergeResolvers<TContext, T extends ResolversDefinition<TContext>
   return result;
 }
 
-export async function mergeResolversAsync<TContext, T extends ResolversDefinition<TContext>>(resolversDefinitions: T[], options?: MergeResolversOptions): Promise<T> {
+export async function mergeResolversAsync<TContext, T extends ResolversDefinition<TContext>>(
+  resolversDefinitions: T[],
+  options?: MergeResolversOptions
+): Promise<T> {
   if (!resolversDefinitions || resolversDefinitions.length === 0) {
     return {} as T;
   }
@@ -96,7 +102,7 @@ export async function mergeResolversAsync<TContext, T extends ResolversDefinitio
       return deepMerge.all([...resolvers, ...resultsOfFactories], { isMergeableObject }) as any;
     }) as any;
   } else {
-    result = deepMerge.all(resolvers, { isMergeableObject }) as IResolvers<any, TContext> as T;
+    result = (deepMerge.all(resolvers, { isMergeableObject }) as IResolvers<any, TContext>) as T;
   }
   if (options && options.exclusions) {
     for (const exclusion of options.exclusions) {

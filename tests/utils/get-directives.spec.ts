@@ -26,8 +26,8 @@ describe('getDirectives', () => {
     const directivesMap = getDirectives(schema, schema.getQueryType().getFields()['test']);
     expect(directivesMap).toEqual({
       deprecated: {
-        reason: 'No longer supported'
-      }
+        reason: 'No longer supported',
+      },
     });
   });
 
@@ -43,7 +43,7 @@ describe('getDirectives', () => {
     const schema = makeExecutableSchema({ typeDefs, resolvers: {}, allowUndefinedInResolve: true }) as GraphQLSchema;
     const directivesMap = getDirectives(schema, schema.getQueryType().getFields()['test']);
     expect(directivesMap).toEqual({
-      mydir: {}
+      mydir: {},
     });
   });
 
@@ -60,8 +60,8 @@ describe('getDirectives', () => {
     const directivesMap = getDirectives(schema, schema.getQueryType().getFields()['test']);
     expect(directivesMap).toEqual({
       mydir: {
-        f1: 'test'
-      }
+        f1: 'test',
+      },
     });
   });
 
@@ -77,7 +77,7 @@ describe('getDirectives', () => {
     const schema = makeExecutableSchema({ typeDefs, resolvers: {}, allowUndefinedInResolve: true }) as GraphQLSchema;
     const directivesMap = getDirectives(schema, schema.getQueryType().getFields()['test']);
     expect(directivesMap).toEqual({
-      mydir: {}
+      mydir: {},
     });
   });
 });

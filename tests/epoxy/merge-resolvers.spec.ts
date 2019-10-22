@@ -10,54 +10,44 @@ describe('Merge Resolvers', () => {
   });
 
   it('should return the correct value when one value array provided', () => {
-    expect(mergeResolvers([
-      { User: {} }
-    ])).toEqual({
-      User: {}
+    expect(mergeResolvers([{ User: {} }])).toEqual({
+      User: {},
     });
   });
 
   it('should return the correct when multiple values provided', () => {
-    expect(mergeResolvers([
-      { User: {} },
-      { MyType: {} }
-    ])).toEqual({
+    expect(mergeResolvers([{ User: {} }, { MyType: {} }])).toEqual({
       User: {},
-      MyType: {}
+      MyType: {},
     });
   });
 
   it('should merge first level fields', () => {
-    expect(mergeResolvers([
-      { User: { f1: 1 } },
-      { User: { f2: 2 } },
-    ])).toEqual({
+    expect(mergeResolvers([{ User: { f1: 1 } }, { User: { f2: 2 } }])).toEqual({
       User: {
         f1: 1,
         f2: 2,
-      }
+      },
     });
   });
 
   it('should exclude types', () => {
-    expect(mergeResolvers([
-      { User: {} },
-      { MyType: {} }
-    ], {
-      exclusions: ['User.*']
-    })).toEqual({ MyType: {} });
+    expect(
+      mergeResolvers([{ User: {} }, { MyType: {} }], {
+        exclusions: ['User.*'],
+      })
+    ).toEqual({ MyType: {} });
   });
 
   it('should exclude fields', () => {
-    expect(mergeResolvers([
-      { User: { f1: 1 } },
-      { User: { f2: 2 } },
-    ], {
-      exclusions: ['User.f1']
-    })).toEqual({
+    expect(
+      mergeResolvers([{ User: { f1: 1 } }, { User: { f2: 2 } }], {
+        exclusions: ['User.f1'],
+      })
+    ).toEqual({
       User: {
         f2: 2,
-      }
+      },
     });
   });
 });

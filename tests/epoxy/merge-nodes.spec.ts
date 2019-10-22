@@ -106,7 +106,7 @@ describe('Merge Nodes', () => {
       const type1 = parse(`type A @test { f1: String }`);
       const type2 = parse(`type A @test2 { f2: Int}`);
       const merged = mergeGraphQLNodes([...type1.definitions, ...type2.definitions], {
-        reverseDirectives: true
+        reverseDirectives: true,
       });
       const type: any = merged['A'];
 
@@ -131,7 +131,9 @@ describe('Merge Nodes', () => {
       const type2 = parse(`type A { f1: Int }`);
       const mergedFn = () => mergeGraphQLNodes([...type1.definitions, ...type2.definitions]);
 
-      expect(mergedFn).toThrowError('Unable to merge GraphQL type "A": Field "f1" already defined with a different type. Declared as "String", but you tried to override with "Int"');
+      expect(mergedFn).toThrowError(
+        'Unable to merge GraphQL type "A": Field "f1" already defined with a different type. Declared as "String", but you tried to override with "Int"'
+      );
     });
   });
 
