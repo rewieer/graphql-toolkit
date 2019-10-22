@@ -8,7 +8,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc -m esnext --outDir dist/esnext && tsc -m commonjs --outDir dist/commonjs",
-    "test": "jest --forceExit && yarn bundlesize",
+    "test": "jest",
+    "test:ci": "yarn test --ci --reporters=default --reporters=jest-junit",
     "prepare-release": "yarn build && yarn test",
     "release": "yarn prepare-release && npm publish",
     "ci:release:canary": "node bump.js && npm publish --tag alpha",

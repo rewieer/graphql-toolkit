@@ -15,9 +15,12 @@ jobs:
           command: yarn build
       - run:
           name: Test 
-          command: yarn test
+          command: yarn test:ci
       - store_test_results:
           path: test-results
+      - run:
+          name: Size 
+          command: yarn bundlesize
       - run:
           name: Publish Canary
           command: |
