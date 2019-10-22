@@ -8,3 +8,4 @@ export * from './extract-field-resolvers-from-object-type';
 export * from './extract-resolvers-from-schema';
 export * from './print-schema-with-directives';
 export * from './get-fields-with-directives';
+export * from './extract-extensions';
