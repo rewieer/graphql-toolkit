@@ -27,4 +27,27 @@ describe('Schema From Export', () => {
     const result: any = await loadSchema('./tests/loaders/schema/test-files/loaders/promise-export.js');
     expect(result instanceof GraphQLSchema).toBeTruthy();
   });
+
+  it('should load the schema correctly from promise export', async () => {
+    const result: any = await loadSchema('./tests/loaders/schema/test-files/loaders/promise-export.js');
+    expect(result instanceof GraphQLSchema).toBeTruthy();
+  });
+
+  it.only('should work with extensions (without schema definition)', async () => {
+    const schemaPath = './tests/loaders/schema/test-files/schema-dir/extensions/export-schema.js';
+    const schema = await loadSchema(schemaPath);
+    const queryFields = Object.keys(schema.getQueryType().getFields());
+
+    expect(queryFields).toContain('foo');
+    expect(queryFields).toContain('bar');
+  });
+
+  it.only('should work with extensions (with schema definition)', async () => {
+    const schemaPath = './tests/loaders/schema/test-files/schema-dir/extensions/export-schema-with-def.js';
+    const schema = await loadSchema(schemaPath);
+    const queryFields = Object.keys(schema.getQueryType().getFields());
+
+    expect(queryFields).toContain('foo');
+    expect(queryFields).toContain('bar');
+  });
 });

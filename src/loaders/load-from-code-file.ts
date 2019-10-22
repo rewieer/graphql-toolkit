@@ -1,6 +1,6 @@
-import { DocumentNode, GraphQLSchema, Source, parse, IntrospectionQuery, buildClientSchema } from 'graphql';
+import { DocumentNode, GraphQLSchema, Source, parse, IntrospectionQuery, buildClientSchema, extendSchema } from 'graphql';
 import { extractDocumentStringFromCodeFile, ExtractOptions } from '../utils/extract-document-string-from-code-file';
-import { printSchemaWithDirectives } from '../utils';
+import { printSchemaWithDirectives, extractExtensions } from '../utils';
 import { debugLog } from '../utils/debugLog';
 
 function isSchemaText(obj: any): obj is string {
@@ -29,7 +29,8 @@ function isSchemaAst(obj: any): obj is DocumentNode {
 
 function resolveExport(fileExport: GraphQLSchema | DocumentNode | string | { data: IntrospectionQuery } | IntrospectionQuery): DocumentNode | null {
   if (isSchemaObject(fileExport)) {
-    return parse(printSchemaWithDirectives(fileExport));
+    const ext = extractExtensions(fileExport);
+    return parse(printSchemaWithDirectives(extendSchema(fileExport, ext)));
   } else if (isSchemaText(fileExport)) {
     return parse(fileExport);
   } else if (isWrappedSchemaJson(fileExport)) {
@@ -72,6 +73,7 @@ async function tryToLoadFromExport(rawFilePath: string): Promise<DocumentNode> {
         try {
           return resolveExport(exportValue);
         } catch (e) {
+          console.log(e);
           throw new Error('Exported schema must be of type GraphQLSchema, text, AST, or introspection JSON.');
         }
       } else {

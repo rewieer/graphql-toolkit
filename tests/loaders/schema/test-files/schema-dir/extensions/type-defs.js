@@ -1,4 +1,4 @@
-export const doc = /* GraphQL */ `
+exports.doc = /* GraphQL */ `
   type Query {
     foo: String
   }
